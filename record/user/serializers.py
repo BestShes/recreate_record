@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from utils import customexception
 from .models import User
 
 
@@ -22,3 +23,15 @@ class NormalUserSerializer(serializers.ModelSerializer):
             'access_token': {'write_only': True},
             'user_type': {'write_only': True}
         }
+
+    def create(self, validated_data):
+        if 'password' in validated_data.keys():
+            password = validated_data.pop('password')
+            user = User(**validated_data)
+            user.set_password(password)
+            user.save()
+
+        else:
+            raise customexception.ValidationException('Normal user required Password')
+
+        return user
