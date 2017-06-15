@@ -5,7 +5,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from user.serializers import NormalUserSerializer, NormalLoginSerializer
+from user.serializers import NormalUserSerializer, NormalLoginSerializer, LogoutSerializer
 from .models import Member
 
 
@@ -28,3 +28,15 @@ class LoginView(GenericAPIView):
         user = NormalUserSerializer(user_object)
         return Response(status=status.HTTP_200_OK, data={'user': user.data,
                                                          'token': token.key})
+
+
+class LogoutView(GenericAPIView):
+    serializer_class = LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = request.user
+        TokenModel.objects.get(user=user).delete()
+        return Response(status=status.HTTP_200_OK, data={'detail': 'Logout Succeeded'})

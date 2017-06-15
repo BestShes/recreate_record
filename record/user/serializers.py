@@ -57,3 +57,6 @@ class NormalLoginSerializer(serializers.Serializer):
         else:
             return user_object
 
+
+class LogoutSerializer(serializers.Serializer):
+    pass
