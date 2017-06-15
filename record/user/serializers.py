@@ -1,7 +1,8 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 
 from utils import customexception
-from .models import User
+from .models import Member
 
 
 class NormalUserSerializer(serializers.ModelSerializer):
@@ -9,7 +10,7 @@ class NormalUserSerializer(serializers.ModelSerializer):
     access_token = serializers.CharField(allow_blank=True)
 
     class Meta:
-        model = User
+        model = Member
         fields = (
             'username',
             'password',
@@ -27,7 +28,7 @@ class NormalUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if 'password' in validated_data.keys():
             password = validated_data.pop('password')
-            user = User(**validated_data)
+            user = Member(**validated_data)
             user.set_password(password)
             user.save()
 
@@ -35,3 +36,24 @@ class NormalUserSerializer(serializers.ModelSerializer):
             raise customexception.ValidationException('Normal user required Password')
 
         return user
+
+
+class NormalLoginSerializer(serializers.Serializer):
+    username = serializers.EmailField()
+    password = serializers.CharField(min_length=8)
+
+    class Meta:
+        fields = (
+            'username',
+            'password',
+        )
+
+    def create(self, validated_data):
+        username = validated_data['username']
+        password = validated_data['password']
+        user_object = authenticate(username=username, password=password)
+        if user_object is None:
+            return customexception.AuthenticateException('ID 혹은 Password가 틀렸거나 해당 ID가 존재하지 않습니다.')
+        else:
+            return user_object
+

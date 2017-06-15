@@ -12,6 +12,7 @@ router.register(
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^user/', include('user.urls')),
     url(r'^api/', include(router.urls, namespace='api')),
     url(r'^rest-auth/', include('rest_auth.urls')),
 ]
