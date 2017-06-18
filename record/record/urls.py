@@ -2,12 +2,17 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 
+from diary.views import DiaryViewSet
 from user.views import UserViewSet
 
 router = routers.DefaultRouter()
 router.register(
     r'users',
     UserViewSet
+)
+router.register(
+    r'diary',
+    DiaryViewSet
 )
 
 urlpatterns = [
