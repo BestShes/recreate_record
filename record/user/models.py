@@ -8,9 +8,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
         ('google', 'Google'),
     )
     username = models.EmailField(unique=True)
-    password = models.CharField(max_length=100, null=True)
+    password = models.CharField(max_length=100, blank=True)
     nickname = models.CharField(max_length=50)
-    access_token = models.CharField(max_length=100, null=True)
+    access_token = models.CharField(max_length=100, blank=True)
     user_type = models.CharField(max_length=6, choices=USER_TYPE, default='normal')
 
     USERNAME_FIELD = 'username'
