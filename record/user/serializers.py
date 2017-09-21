@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from utils import customexception
+from utils import customexception, sendemail
 from .models import Member
 
 
@@ -32,6 +32,9 @@ class NormalUserSerializer(serializers.ModelSerializer):
             user.set_password(password)
             user.is_active = False
             user.save()
+            sendemail.MailTest.certification_mail(user.username)
+
+
 
         else:
             raise customexception.ValidationException('Normal user required Password')
