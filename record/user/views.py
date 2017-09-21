@@ -1,5 +1,6 @@
 from rest_auth.app_settings import create_token
 from rest_auth.models import TokenModel
+from rest_framework import filters
 from rest_framework import permissions, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -14,6 +15,9 @@ class UserViewSet(ModelViewSet):
     serializer_class = NormalUserSerializer
     lookup_field = 'username'
     permission_classes = (permissions.AllowAny,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('username',)
+
 
 
 class LoginView(GenericAPIView):
