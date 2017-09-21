@@ -1,10 +1,9 @@
+from django.conf import settings
 from django.db import models
-
-from user.models import Member
 
 
 class Diary(models.Model):
-    author = models.ForeignKey(Member)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
     title = models.CharField(max_length=50)
     cover_img = models.ImageField(blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
