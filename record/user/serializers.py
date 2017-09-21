@@ -30,6 +30,7 @@ class NormalUserSerializer(serializers.ModelSerializer):
             password = validated_data.pop('password')
             user = Member(**validated_data)
             user.set_password(password)
+            user.is_active = False
             user.save()
 
         else:
