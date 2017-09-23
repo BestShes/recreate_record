@@ -1,7 +1,9 @@
 from django.contrib.auth import authenticate
+from rest_auth.app_settings import create_token
+from rest_auth.models import TokenModel
 from rest_framework import serializers
 
-from utils import customexception
+from utils import customexception, sendemail
 from .models import Member
 
 
@@ -32,7 +34,8 @@ class NormalUserSerializer(serializers.ModelSerializer):
             user.set_password(password)
             user.is_active = False
             user.save()
-
+            token = create_token(TokenModel, user, NormalUserSerializer)
+            sendemail.MailTest.certification_mail(user.username, token.key)
         else:
             raise customexception.ValidationException('Normal user required Password')
 
@@ -54,7 +57,9 @@ class NormalLoginSerializer(serializers.Serializer):
         password = validated_data['password']
         user_object = authenticate(username=username, password=password)
         if user_object is None:
-            return customexception.AuthenticateException('ID 혹은 Password가 틀렸거나 해당 ID가 존재하지 않습니다.')
+            raise customexception.AuthenticateException('ID 혹은 Password가 틀렸거나 해당 ID가 존재하지 않습니다.')
+        elif user_object.is_active == False:
+            raise customexception.AuthenticateException('Email이 인증되지 않았습니다.')
         else:
             return user_object
 
