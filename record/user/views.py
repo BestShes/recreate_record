@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from user.serializers import NormalUserSerializer, NormalLoginSerializer, LogoutSerializer
+from utils import customexception
 from .models import Member
 
 
@@ -18,6 +19,19 @@ class UserViewSet(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
 
+
+def emailcertification(request):
+    try:
+        username = request.GET.get('username')
+        key = request.GET.get('key')
+        user_object = Member.objects.get(username=username)
+        if user_object.is_active == False and user_object.auth_token == key:
+            user_object.is_active = True
+            user_object.save()
+        else:
+            raise customexception.AuthenticateException
+    except:
+        raise customexception.AuthenticateException('유효하지 않습니다.')
 
 
 class LoginView(GenericAPIView):

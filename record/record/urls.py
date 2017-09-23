@@ -6,7 +6,7 @@ from rest_framework import routers
 from diary.views import DiaryViewSet
 from post.views import PostViewSet, PhotoViewSet
 from record import settings
-from user.views import UserViewSet
+from user.views import UserViewSet, emailcertification
 
 router = routers.DefaultRouter()
 router.register(
@@ -32,4 +32,5 @@ urlpatterns = \
         url(r'^user/', include('user.urls')),
         url(r'^api/', include(router.urls, namespace='api')),
         url(r'^rest-auth/', include('rest_auth.urls')),
+        url(r'^auth/$', emailcertification)
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
